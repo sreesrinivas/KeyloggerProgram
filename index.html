@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keylogger Logs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1 {
+            color: #444;
+        }
+        #log-container {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            max-width: 800px;
+            margin: 0 auto;
+            white-space: pre-wrap; /* Preserve formatting and line breaks */
+            font-family: monospace;
+        }
+        #refresh-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #refresh-button:hover {
+            background-color: #0056b3;
+        }
+        #status {
+            margin-top: 10px;
+            color: #888;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>Keylogger Logs</h1>
+    <div id="log-container">Loading logs...</div>
+    <button id="refresh-button">Refresh Logs</button>
+    <div id="status"></div>
+
+    <script>
+        // Function to load logs from the server
+        function loadLogs() {
+            const status = document.getElementById('status');
+            status.textContent = 'Loading logs...';
+
+            // Add a cache-busting query parameter to prevent caching
+            fetch('keylog.txt?t=' + new Date().getTime())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to load logs');
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    document.getElementById('log-container').textContent = data;
+                    status.textContent = 'Logs loaded successfully.';
+                })
+                .catch(error => {
+                    console.error('Error loading logs:', error);
+                    document.getElementById('log-container').textContent = 'Failed to load logs.';
+                    status.textContent = 'Error: ' + error.message;
+                });
+        }
+
+        // Load logs when the page loads
+        window.onload = loadLogs;
+
+        // Refresh logs when the button is clicked
+        document.getElementById('refresh-button').addEventListener('click', loadLogs);
+    </script>
+</body>
+</html>
